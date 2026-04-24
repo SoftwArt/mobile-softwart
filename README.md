@@ -110,8 +110,9 @@ Production URL is set in `core/constants/api_constants.dart`. No additional conf
 
 ## Related repositories
 
-- [softwart-backend](https://github.com/selvcebo/softwart-backend) — Node.js + Express + TypeScript + PostgreSQL
-- [softwart-frontend](https://github.com/selvcebo/softwart-frontend) — React + TypeScript + Vite + Tailwind
+- [softwart-backend](https://github.com/SoftwArt/softwart-backend) — Node.js + Express + TypeScript + PostgreSQL
+- [softwart-frontend](https://github.com/SoftwArt/frontend-softwart-2) — React + TypeScript + Vite + Tailwind
+- [softwart-docs](https://github.com/SoftwArt/softwart-docs) — C4 diagrams, MHU, project documentation
 
 ---
 
