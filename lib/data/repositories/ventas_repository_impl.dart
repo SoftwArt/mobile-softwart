@@ -1,16 +1,20 @@
 import '../../core/errors/exceptions.dart';
-import '../../core/utils/token_storage.dart';
 import '../../domain/entities/venta.dart';
 import '../../domain/repositories/ventas_repository.dart';
+import '../datasources/auth_local_datasource.dart';
 import '../datasources/ventas_datasource.dart';
 
 class VentasRepositoryImpl implements VentasRepository {
   final VentasDatasource _datasource;
+  final AuthLocalDataSource _localDataSource;
 
-  VentasRepositoryImpl(this._datasource);
+  VentasRepositoryImpl(
+    this._datasource,
+    [AuthLocalDataSource? localDataSource]
+  ) : _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   Future<String> _getToken() async {
-    final token = await TokenStorage.getToken();
+    final token = await _localDataSource.getToken();
     if (token == null) throw const UnauthorizedException('Sin sesión activa');
     return token;
   }

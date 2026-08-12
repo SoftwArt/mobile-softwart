@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF002926), Color(0xFF003D3A), Color(0xFF1B3F3D)],
+            colors: [AppColors.sidebarDarkStart, AppColors.sidebarDarkEnd, AppColors.sidebar],
             stops: [0.0, 0.5, 1.0],
           ),
         ),

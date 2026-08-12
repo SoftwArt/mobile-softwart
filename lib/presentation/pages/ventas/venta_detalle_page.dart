@@ -4,6 +4,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../domain/entities/venta.dart';
 import '../../providers/ventas_provider.dart';
+import '../../widgets/error_widget.dart';
 import '../../widgets/loading_widget.dart';
 
 class VentaDetallePage extends StatefulWidget {
@@ -60,8 +61,9 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                     ),
                     _InfoRow(
                       label: 'Estado',
-                      valor:
-                          venta.estado ? 'Pagada' : 'Pendiente de pago',
+                      valor: venta.completado
+                          ? 'Pagada'
+                          : 'Pendiente de pago',
                     ),
                     _InfoRow(
                       label: 'Abonos',
@@ -85,6 +87,12 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
               builder: (context, provider, _) {
                 if (provider.isLoadingPagos) {
                   return const LoadingWidget();
+                }
+                if (provider.estadoPagosError != null) {
+                  return AppErrorWidget(
+                    mensaje: provider.estadoPagosError!,
+                    onRetry: () => provider.cargarEstadoPagos(widget.venta.idVenta),
+                  );
                 }
                 final pagos = provider.estadoPagos;
                 if (pagos == null) {
@@ -112,7 +120,7 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                                 ? Icons.check_circle
                                 : Icons.radio_button_unchecked,
                             color: pagado
-                                ? const Color(0xFF10B981)
+                                ? AppColors.success
                                 : AppColors.muted,
                           ),
                           title: Text('Abono #$numero'),
@@ -151,7 +159,7 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                                   '\$${_formatNum(totalPagado)}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF10B981),
+                                    color: AppColors.success,
                                   ),
                                 ),
                               ],
@@ -171,7 +179,7 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: saldoPendiente > 0
-                                        ? const Color(0xFFF59E0B)
+                                        ? AppColors.warning
                                         : AppColors.muted,
                                   ),
                                 ),

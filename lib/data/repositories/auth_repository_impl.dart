@@ -1,14 +1,18 @@
-import '../../core/utils/token_storage.dart';
 import '../../domain/entities/usuario.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_datasource.dart';
+import '../datasources/auth_local_datasource.dart';
 
 // Implementación concreta del repositorio de auth
 class AuthRepositoryImpl implements AuthRepository {
   final AuthDatasource _datasource;
+  final AuthLocalDataSource _localDataSource;
 
-  AuthRepositoryImpl({AuthDatasource? datasource})
-      : _datasource = datasource ?? AuthDatasource();
+  AuthRepositoryImpl({
+    AuthDatasource? datasource,
+    AuthLocalDataSource? localDataSource,
+  })  : _datasource = datasource ?? AuthDatasource(),
+        _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   @override
   Future<({Usuario usuario, String token})> login({
@@ -16,12 +20,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required String clave,
   }) async {
     final result = await _datasource.login(correo: correo, clave: clave);
-    await TokenStorage.saveToken(result.token);
+    await _localDataSource.saveToken(result.token);
     return (usuario: result.usuario, token: result.token);
   }
 
   @override
   Future<void> logout() async {
-    await TokenStorage.deleteToken();
+    await _localDataSource.deleteToken();
   }
 }

@@ -95,13 +95,13 @@ class AppDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(
                       Icons.logout_rounded,
-                      color: Color(0xFFFC8181),
+                      color: AppColors.logoutRed,
                       size: 20,
                     ),
                     title: const Text(
                       'Cerrar sesión',
                       style: TextStyle(
-                        color: Color(0xFFFC8181),
+                        color: AppColors.logoutRed,
                         fontSize: 14,
                       ),
                     ),

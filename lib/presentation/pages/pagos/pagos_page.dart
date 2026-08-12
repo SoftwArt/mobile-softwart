@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../domain/entities/pago.dart';
 import '../../providers/pagos_provider.dart';
 import '../../widgets/error_widget.dart';
+import '../../widgets/empty_state_widget.dart';
+import '../../widgets/pressable_scale.dart';
+import '../../../core/navigation/app_page_route.dart';
 import '../../widgets/filtro_menu_button.dart';
-import '../../widgets/loading_widget.dart';
+import '../../widgets/skeleton_loader.dart';
 import '../../widgets/user_menu_button.dart';
 import 'pago_detalle_page.dart';
 import '../main_shell.dart';
@@ -61,7 +65,7 @@ class _PagosPageState extends State<PagosPage> {
       ),
       body: Consumer<PagosProvider>(
         builder: (context, provider, _) {
-          if (provider.isLoading) return const LoadingWidget();
+          if (provider.isLoading) return const ListSkeletonLoader();
           if (provider.error != null) {
             return AppErrorWidget(
               mensaje: provider.error!,
@@ -108,11 +112,9 @@ class _PagosPageState extends State<PagosPage> {
               ),
               Expanded(
                 child: pagos.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'No hay pagos que coincidan',
-                          style: TextStyle(color: AppColors.muted),
-                        ),
+                    ? const EmptyStateWidget(
+                        mensaje: 'No hay pagos que coincidan',
+                        icono: Icons.payments_outlined,
                       )
                     : RefreshIndicator(
                         onRefresh: provider.cargar,
@@ -120,7 +122,7 @@ class _PagosPageState extends State<PagosPage> {
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
                           itemCount: pagos.length,
                           separatorBuilder: (_, __) => const SizedBox(height: 8),
-                          itemBuilder: (_, i) => _PagoCard(pago: pagos[i]),
+                          itemBuilder: (_, i) => _PagoCard(pago: pagos[i], index: i),
                         ),
                       ),
               ),
@@ -134,18 +136,18 @@ class _PagosPageState extends State<PagosPage> {
 
 class _PagoCard extends StatelessWidget {
   final Pago pago;
-  const _PagoCard({required this.pago});
+  final int index;
+  const _PagoCard({required this.pago, required this.index});
 
   @override
   Widget build(BuildContext context) {
     final validado = pago.estadoPago.toLowerCase() == 'validado';
-    return Card(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => PagoDetallePage(pago: pago)),
-        ),
+    return PressableScale(
+      onTap: () => Navigator.push(
+        context,
+        AppPageRoute(builder: (_) => PagoDetallePage(pago: pago)),
+      ),
+      child: Card(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
@@ -155,15 +157,15 @@ class _PagoCard extends StatelessWidget {
                 height: 42,
                 decoration: BoxDecoration(
                   color: validado
-                      ? const Color(0xFF10B981).withValues(alpha: 0.12)
-                      : const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                      ? AppColors.success.withValues(alpha: 0.12)
+                      : AppColors.warning.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   validado ? Icons.check_circle_outline : Icons.schedule_rounded,
                   color: validado
-                      ? const Color(0xFF10B981)
-                      : const Color(0xFFF59E0B),
+                      ? AppColors.success
+                      : AppColors.warning,
                   size: 22,
                 ),
               ),
@@ -205,8 +207,8 @@ class _PagoCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: validado
-                          ? const Color(0xFF10B981).withValues(alpha: 0.1)
-                          : const Color(0xFFF59E0B).withValues(alpha: 0.1),
+                          ? AppColors.success.withValues(alpha: 0.1)
+                          : AppColors.warning.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -215,8 +217,8 @@ class _PagoCard extends StatelessWidget {
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         color: validado
-                            ? const Color(0xFF10B981)
-                            : const Color(0xFFF59E0B),
+                            ? AppColors.success
+                            : AppColors.warning,
                       ),
                     ),
                   ),
@@ -228,6 +230,9 @@ class _PagoCard extends StatelessWidget {
           ),
         ),
       ),
-    );
+    )
+        .animate(delay: (30 * index).ms)
+        .fadeIn(duration: 220.ms)
+        .slideY(begin: 0.08, duration: 220.ms, curve: Curves.easeOutCubic);
   }
 }

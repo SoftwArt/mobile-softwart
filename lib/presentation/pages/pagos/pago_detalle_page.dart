@@ -5,6 +5,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../domain/entities/pago.dart';
 import '../../providers/pagos_provider.dart';
 import '../../widgets/estado_badge.dart';
+import '../../widgets/estado_chip_selector.dart';
 
 class PagoDetallePage extends StatefulWidget {
   final Pago pago;
@@ -58,7 +59,7 @@ class _PagoDetallePageState extends State<PagoDetallePage> {
         content: Text(
           ok ? 'Estado actualizado' : (provider.error ?? 'Error al actualizar'),
         ),
-        backgroundColor: ok ? const Color(0xFF10B981) : AppColors.destructive,
+        backgroundColor: ok ? AppColors.success : AppColors.destructive,
       ),
     );
     if (ok) Navigator.of(context).pop();
@@ -178,37 +179,10 @@ class _PagoDetallePageState extends State<PagoDetallePage> {
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
               ),
               const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: _estados.map((e) {
-                  final selected = _estadoSeleccionado == e.id;
-                  return GestureDetector(
-                    onTap: () => setState(() => _estadoSeleccionado = e.id),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                      decoration: BoxDecoration(
-                        color: selected ? AppColors.primary : Colors.white,
-                        border: Border.all(
-                          color: selected ? AppColors.primary : AppColors.border,
-                          width: selected ? 2 : 1,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        e.nombre,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight:
-                              selected ? FontWeight.w600 : FontWeight.normal,
-                          color: selected ? Colors.white : AppColors.foreground,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+              EstadoChipSelector(
+                opciones: _estados,
+                valorActual: _estadoSeleccionado,
+                onChanged: (id) => setState(() => _estadoSeleccionado = id),
               ),
               const SizedBox(height: 20),
               SizedBox(

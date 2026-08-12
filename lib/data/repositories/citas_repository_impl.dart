@@ -1,16 +1,20 @@
 import '../../core/errors/exceptions.dart';
-import '../../core/utils/token_storage.dart';
 import '../../domain/entities/cita.dart';
 import '../../domain/repositories/citas_repository.dart';
+import '../datasources/auth_local_datasource.dart';
 import '../datasources/citas_datasource.dart';
 
 class CitasRepositoryImpl implements CitasRepository {
   final CitasDatasource _datasource;
+  final AuthLocalDataSource _localDataSource;
 
-  CitasRepositoryImpl(this._datasource);
+  CitasRepositoryImpl(
+    this._datasource,
+    [AuthLocalDataSource? localDataSource]
+  ) : _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   Future<String> _getToken() async {
-    final token = await TokenStorage.getToken();
+    final token = await _localDataSource.getToken();
     if (token == null) throw const UnauthorizedException('Sin sesión activa');
     return token;
   }

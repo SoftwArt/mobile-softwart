@@ -1,17 +1,21 @@
 import '../../core/errors/exceptions.dart';
-import '../../core/utils/token_storage.dart';
 import '../../domain/entities/pedido.dart';
 import '../../domain/entities/estado_servicio.dart';
 import '../../domain/repositories/pedidos_repository.dart';
+import '../datasources/auth_local_datasource.dart';
 import '../datasources/pedidos_datasource.dart';
 
 class PedidosRepositoryImpl implements PedidosRepository {
   final PedidosDatasource _datasource;
+  final AuthLocalDataSource _localDataSource;
 
-  PedidosRepositoryImpl(this._datasource);
+  PedidosRepositoryImpl(
+    this._datasource,
+    [AuthLocalDataSource? localDataSource]
+  ) : _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   Future<String> _getToken() async {
-    final token = await TokenStorage.getToken();
+    final token = await _localDataSource.getToken();
     if (token == null) throw const UnauthorizedException('Sin sesión activa');
     return token;
   }

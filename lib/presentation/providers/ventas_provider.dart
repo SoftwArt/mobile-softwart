@@ -18,12 +18,14 @@ class VentasProvider extends ChangeNotifier {
   String? _error;
   List<Venta> _ventas = [];
   Map<String, dynamic>? _estadoPagos;
+  String? _estadoPagosError;
   bool _isLoadingPagos = false;
 
   bool get isLoading => _isLoading;
   String? get error => _error;
   List<Venta> get ventas => _ventas;
   Map<String, dynamic>? get estadoPagos => _estadoPagos;
+  String? get estadoPagosError => _estadoPagosError;
   bool get isLoadingPagos => _isLoadingPagos;
 
   Future<void> cargar() async {
@@ -52,12 +54,13 @@ class VentasProvider extends ChangeNotifier {
   Future<void> cargarEstadoPagos(int idVenta) async {
     _isLoadingPagos = true;
     _estadoPagos = null;
+    _estadoPagosError = null;
     notifyListeners();
 
     try {
       _estadoPagos = await _getEstadoPagosUsecase(idVenta);
     } catch (e) {
-      _error = e is AppException ? e.message : 'Error al cargar pagos';
+      _estadoPagosError = e is AppException ? e.message : 'Error al cargar pagos';
     } finally {
       _isLoadingPagos = false;
       notifyListeners();

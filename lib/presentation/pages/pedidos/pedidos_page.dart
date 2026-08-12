@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/entities/pedido.dart';
@@ -6,9 +7,12 @@ import '../../providers/pedidos_provider.dart';
 import '../../widgets/estado_badge.dart';
 import '../../widgets/user_menu_button.dart';
 import '../../widgets/filtro_menu_button.dart';
-import '../../widgets/loading_widget.dart';
+import '../../widgets/skeleton_loader.dart';
+import '../../widgets/pressable_scale.dart';
+import '../../../core/navigation/app_page_route.dart';
 import '../main_shell.dart';
 import '../../widgets/error_widget.dart';
+import '../../widgets/empty_state_widget.dart';
 import 'pedido_detalle_page.dart';
 
 class PedidosPage extends StatefulWidget {
@@ -71,7 +75,7 @@ class _PedidosPageState extends State<PedidosPage> {
       body: Consumer<PedidosProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
-            return const LoadingWidget(mensaje: 'Cargando servicios...');
+            return const ListSkeletonLoader();
           }
           if (provider.error != null) {
             return AppErrorWidget(
@@ -181,22 +185,9 @@ class _PedidosPageState extends State<PedidosPage> {
                 // Lista
                 Expanded(
                   child: filtrados.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.inventory_2_outlined,
-                                size: 48,
-                                color: AppColors.muted.withValues(alpha: 0.4),
-                              ),
-                              const SizedBox(height: 12),
-                              const Text(
-                                'No hay servicios que coincidan',
-                                style: TextStyle(color: AppColors.muted),
-                              ),
-                            ],
-                          ),
+                      ? const EmptyStateWidget(
+                          mensaje: 'No hay servicios que coincidan',
+                          icono: Icons.inventory_2_outlined,
                         )
                       : ListView.builder(
                           padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
@@ -205,8 +196,9 @@ class _PedidosPageState extends State<PedidosPage> {
                             final pedido = filtrados[index];
                             return _PedidoTile(
                               pedido: pedido,
+                              index: index,
                               onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
+                                AppPageRoute(
                                   builder: (_) =>
                                       PedidoDetallePage(pedido: pedido),
                                 ),
@@ -226,9 +218,10 @@ class _PedidosPageState extends State<PedidosPage> {
 
 class _PedidoTile extends StatelessWidget {
   final Pedido pedido;
+  final int index;
   final VoidCallback onTap;
 
-  const _PedidoTile({required this.pedido, required this.onTap});
+  const _PedidoTile({required this.pedido, required this.index, required this.onTap});
 
   String _formatNum(double v) => v
       .toStringAsFixed(0)
@@ -239,32 +232,37 @@ class _PedidoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        onTap: onTap,
-        leading: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppColors.warning.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(10),
+    return PressableScale(
+      onTap: onTap,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 8),
+        child: ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.warning.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(
+              Icons.inventory_2_outlined,
+              color: AppColors.warning,
+              size: 20,
+            ),
           ),
-          child: const Icon(
-            Icons.inventory_2_outlined,
-            color: AppColors.warning,
-            size: 20,
+          title: Text(
+            pedido.clienteNombre ?? pedido.nombreServicio ?? 'Servicio #${pedido.idDetalle}',
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           ),
+          subtitle: Text(
+            '${pedido.nombreServicio ?? 'Servicio'}  •  \$${_formatNum(pedido.precio)}',
+            style: const TextStyle(fontSize: 12),
+          ),
+          trailing: EstadoBadge(texto: pedido.estado),
         ),
-        title: Text(
-          pedido.clienteNombre ?? pedido.nombreServicio ?? 'Servicio #${pedido.idDetalle}',
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-        ),
-        subtitle: Text(
-          '${pedido.nombreServicio ?? 'Servicio'}  •  \$${_formatNum(pedido.precio)}',
-          style: const TextStyle(fontSize: 12),
-        ),
-        trailing: EstadoBadge(texto: pedido.estado),
       ),
-    );
+    )
+        .animate(delay: (30 * index).ms)
+        .fadeIn(duration: 220.ms)
+        .slideY(begin: 0.08, duration: 220.ms, curve: Curves.easeOutCubic);
   }
 }

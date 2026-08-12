@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../providers/clientes_provider.dart';
-import '../../widgets/loading_widget.dart';
+import '../../widgets/skeleton_loader.dart';
 import '../../widgets/user_menu_button.dart';
 import '../../widgets/error_widget.dart';
+import '../../widgets/empty_state_widget.dart';
+import '../../widgets/pressable_scale.dart';
+import '../../../core/navigation/app_page_route.dart';
 import 'cliente_detalle_page.dart';
 import '../main_shell.dart';
 
@@ -47,7 +51,7 @@ class _ClientesPageState extends State<ClientesPage> {
       body: Consumer<ClientesProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
-            return const LoadingWidget(mensaje: 'Cargando clientes...');
+            return const ListSkeletonLoader();
           }
           if (provider.error != null) {
             return AppErrorWidget(
@@ -112,11 +116,9 @@ class _ClientesPageState extends State<ClientesPage> {
                 // Lista
                 Expanded(
                   child: filtrados.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'No hay resultados',
-                            style: TextStyle(color: AppColors.muted),
-                          ),
+                      ? const EmptyStateWidget(
+                          mensaje: 'No hay resultados',
+                          icono: Icons.people_outline,
                         )
                       : ListView.builder(
                           padding: const EdgeInsets.symmetric(
@@ -126,15 +128,16 @@ class _ClientesPageState extends State<ClientesPage> {
                           itemCount: filtrados.length,
                           itemBuilder: (context, index) {
                             final cliente = filtrados[index];
-                            return Card(
+                            return PressableScale(
+                              onTap: () => Navigator.of(context).push(
+                                AppPageRoute(
+                                  builder: (_) =>
+                                      ClienteDetallePage(cliente: cliente),
+                                ),
+                              ),
+                              child: Card(
                               margin: const EdgeInsets.only(bottom: 8),
                               child: ListTile(
-                                onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        ClienteDetallePage(cliente: cliente),
-                                  ),
-                                ),
                                 leading: CircleAvatar(
                                   backgroundColor:
                                       AppColors.accent.withValues(alpha: 0.4),
@@ -193,7 +196,11 @@ class _ClientesPageState extends State<ClientesPage> {
                                   ],
                                 ),
                               ),
-                            );
+                              ),
+                            )
+                                .animate(delay: (30 * index).ms)
+                                .fadeIn(duration: 220.ms)
+                                .slideY(begin: 0.08, duration: 220.ms, curve: Curves.easeOutCubic);
                           },
                         ),
                 ),

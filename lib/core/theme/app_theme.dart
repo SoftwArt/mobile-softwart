@@ -13,8 +13,11 @@ class AppColors {
   static const foreground   = Color(0xFF342822); // dark brown-black
   static const sidebar      = Color(0xFF1B3F3D); // dark teal sidebar
   static const sidebarAccent = Color(0xFFD2B48C); // tan highlight
+  static const sidebarDarkStart = Color(0xFF002926); // gradient de fondo (login/appbar)
+  static const sidebarDarkEnd   = Color(0xFF003D3A); // gradient de fondo (login/appbar)
   static const success      = Color(0xFF10B981);
   static const warning      = Color(0xFFF59E0B);
+  static const logoutRed    = Color(0xFFFC8181); // rojo suave para "Cerrar sesión" en el drawer oscuro
 }
 
 class AppTheme {

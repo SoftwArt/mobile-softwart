@@ -89,7 +89,7 @@ class _MainShellState extends State<MainShell> {
     return Scaffold(
       key: MainShell.scaffoldKey,
       drawer: Drawer(
-        backgroundColor: const Color(0xFF002926),
+        backgroundColor: AppColors.sidebarDarkStart,
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

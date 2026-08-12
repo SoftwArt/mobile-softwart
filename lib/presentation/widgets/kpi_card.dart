@@ -50,7 +50,7 @@ class KpiCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1F2937),
+                  color: AppColors.foreground,
                 ),
               ),
             ),

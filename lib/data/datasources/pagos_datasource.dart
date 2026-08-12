@@ -2,12 +2,17 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../core/constants/api_constants.dart';
 import '../../core/errors/exceptions.dart';
-import '../../core/utils/token_storage.dart';
+import '../datasources/auth_local_datasource.dart';
 import '../models/pago_model.dart';
 
 class PagosDatasource {
+  final AuthLocalDataSource _localDataSource;
+
+  PagosDatasource([AuthLocalDataSource? localDataSource])
+      : _localDataSource = localDataSource ?? AuthLocalDataSource();
+
   Future<List<PagoModel>> getPagos() async {
-    final token = await TokenStorage.getToken();
+    final token = await _localDataSource.getToken();
     final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.payments}?limit=500');
     final res = await http.get(uri, headers: {
       'Authorization': 'Bearer $token',
@@ -24,7 +29,7 @@ class PagosDatasource {
   // PUT /payments/:id, que se saltaba ese bloqueo.
   Future<bool> cambiarEstadoPago(int idPago, int idEstadoPago) async {
     try {
-      final token = await TokenStorage.getToken();
+      final token = await _localDataSource.getToken();
       final uri = Uri.parse(
         '${ApiConstants.baseUrl}${ApiConstants.changePaymentStatus(idPago)}',
       );

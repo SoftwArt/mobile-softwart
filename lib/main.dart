@@ -9,7 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'core/constants/api_constants.dart';
 import 'core/services/push_notification_service.dart';
 import 'core/theme/app_theme.dart';
-import 'core/utils/token_storage.dart';
+import 'data/datasources/auth_local_datasource.dart';
 import 'data/datasources/citas_datasource.dart';
 import 'data/datasources/clientes_datasource.dart';
 import 'data/datasources/dashboard_datasource.dart';
@@ -149,6 +149,8 @@ class _SplashState extends State<_Splash> {
   bool _showMessage = false;
   Timer? _messageTimer;
 
+  final _authLocalDataSource = AuthLocalDataSource();
+
   @override
   void initState() {
     super.initState();
@@ -181,12 +183,12 @@ class _SplashState extends State<_Splash> {
   }
 
   Future<void> _checkAuth() async {
-    final hasToken = await TokenStorage.hasValidToken();
+    final hasToken = await _authLocalDataSource.hasValidToken();
 
     if (!mounted) return;
 
     if (hasToken) {
-      final token = await TokenStorage.getToken();
+      final token = await _authLocalDataSource.getToken();
       if (token != null) {
         try {
           final usuario = _decodeUsuarioFromToken(token);
@@ -198,7 +200,7 @@ class _SplashState extends State<_Splash> {
           Navigator.of(context).pushReplacementNamed('/home');
           return;
         } catch (_) {
-          await TokenStorage.deleteToken();
+          await _authLocalDataSource.deleteToken();
         }
       }
     }
