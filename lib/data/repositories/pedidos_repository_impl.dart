@@ -9,10 +9,9 @@ class PedidosRepositoryImpl implements PedidosRepository {
   final PedidosDatasource _datasource;
   final AuthLocalDataSource _localDataSource;
 
-  PedidosRepositoryImpl(
-    this._datasource,
-    [AuthLocalDataSource? localDataSource]
-  ) : _localDataSource = localDataSource ?? AuthLocalDataSource();
+  PedidosRepositoryImpl(this._datasource,
+      [AuthLocalDataSource? localDataSource])
+      : _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   Future<String> _getToken() async {
     final token = await _localDataSource.getToken();

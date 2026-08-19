@@ -19,6 +19,7 @@ class CitaDetallePage extends StatefulWidget {
 class _CitaDetallePageState extends State<CitaDetallePage> {
   static const _estados = [
     (id: 1, nombre: 'Pendiente'),
+    (id: 5, nombre: 'Confirmada'),
     (id: 2, nombre: 'Completada'),
     (id: 3, nombre: 'No Asistió'),
     (id: 4, nombre: 'Cancelada'),

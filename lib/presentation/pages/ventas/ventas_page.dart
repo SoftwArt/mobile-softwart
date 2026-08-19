@@ -47,7 +47,9 @@ class _VentasPageState extends State<VentasPage> {
   List<Venta> _filtrar(List<Venta> todas) {
     return todas.where((v) {
       final matchQuery = _query.isEmpty ||
-          (v.nombreCliente ?? '').toLowerCase().contains(_query.toLowerCase()) ||
+          (v.nombreCliente ?? '')
+              .toLowerCase()
+              .contains(_query.toLowerCase()) ||
           v.fecha.contains(_query) ||
           'venta #${v.idVenta}'.contains(_query.toLowerCase());
       bool matchEstado = true;
@@ -58,9 +60,7 @@ class _VentasPageState extends State<VentasPage> {
   }
 
   String _formatCOP(double v) {
-    final s = v
-        .toStringAsFixed(0)
-        .replaceAllMapped(
+    final s = v.toStringAsFixed(0).replaceAllMapped(
           RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
           (m) => '${m[1]}.',
         );
@@ -231,78 +231,81 @@ class _VentasPageState extends State<VentasPage> {
                                 ),
                               ),
                               child: Card(
-                              margin: const EdgeInsets.only(bottom: 8),
-                              child: ListTile(
-                                leading: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary
-                                        .withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    Icons.receipt_rounded,
-                                    color: AppColors.primary,
-                                    size: 20,
-                                  ),
-                                ),
-                                title: Text(
-                                  venta.nombreCliente ??
-                                      'Venta #${venta.idVenta}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  formatFecha(venta.fecha),
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                                trailing: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      _formatCOP(venta.total),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.foreground,
-                                      ),
+                                margin: const EdgeInsets.only(bottom: 8),
+                                child: ListTile(
+                                  leading: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary
+                                          .withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: pagada
-                                            ? AppColors.success
-                                                .withValues(alpha: 0.12)
-                                            : AppColors.warning
-                                                .withValues(alpha: 0.12),
-                                        borderRadius:
-                                            BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        pagada ? 'Pagada' : 'Pendiente',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: pagada
-                                              ? AppColors.success
-                                              : AppColors.warning,
-                                          fontWeight: FontWeight.w600,
+                                    child: const Icon(
+                                      Icons.receipt_rounded,
+                                      color: AppColors.primary,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    venta.nombreCliente ??
+                                        'Venta #${venta.idVenta}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    formatFecha(venta.fecha),
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                  trailing: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        _formatCOP(venta.total),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.foreground,
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 4),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: pagada
+                                              ? AppColors.success
+                                                  .withValues(alpha: 0.12)
+                                              : AppColors.warning
+                                                  .withValues(alpha: 0.12),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          pagada ? 'Pagada' : 'Pendiente',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: pagada
+                                                ? AppColors.success
+                                                : AppColors.warning,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
                               ),
                             )
                                 .animate(delay: (30 * index).ms)
                                 .fadeIn(duration: 220.ms)
-                                .slideY(begin: 0.08, duration: 220.ms, curve: Curves.easeOutCubic);
+                                .slideY(
+                                    begin: 0.08,
+                                    duration: 220.ms,
+                                    curve: Curves.easeOutCubic);
                           },
                         ),
                 ),

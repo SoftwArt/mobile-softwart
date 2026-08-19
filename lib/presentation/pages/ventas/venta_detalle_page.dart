@@ -21,15 +21,11 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context
-          .read<VentasProvider>()
-          .cargarEstadoPagos(widget.venta.idVenta);
+      context.read<VentasProvider>().cargarEstadoPagos(widget.venta.idVenta);
     });
   }
 
-  String _formatNum(double v) => v
-      .toStringAsFixed(0)
-      .replaceAllMapped(
+  String _formatNum(double v) => v.toStringAsFixed(0).replaceAllMapped(
         RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
         (m) => '${m[1]}.',
       );
@@ -61,9 +57,7 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                     ),
                     _InfoRow(
                       label: 'Estado',
-                      valor: venta.completado
-                          ? 'Pagada'
-                          : 'Pendiente de pago',
+                      valor: venta.completado ? 'Pagada' : 'Pendiente de pago',
                     ),
                     _InfoRow(
                       label: 'Abonos',
@@ -91,7 +85,8 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                 if (provider.estadoPagosError != null) {
                   return AppErrorWidget(
                     mensaje: provider.estadoPagosError!,
-                    onRetry: () => provider.cargarEstadoPagos(widget.venta.idVenta),
+                    onRetry: () =>
+                        provider.cargarEstadoPagos(widget.venta.idVenta),
                   );
                 }
                 final pagos = provider.estadoPagos;
@@ -110,8 +105,7 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                       final index = entry.key;
                       final abono = entry.value as Map<String, dynamic>;
                       final pagado = index < pagosRealizados;
-                      final monto =
-                          (abono['amount'] as num?)?.toDouble() ?? 0;
+                      final monto = (abono['amount'] as num?)?.toDouble() ?? 0;
                       final numero = abono['number'] as int? ?? (index + 1);
                       return Card(
                         child: ListTile(
@@ -119,13 +113,10 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                             pagado
                                 ? Icons.check_circle
                                 : Icons.radio_button_unchecked,
-                            color: pagado
-                                ? AppColors.success
-                                : AppColors.muted,
+                            color: pagado ? AppColors.success : AppColors.muted,
                           ),
                           title: Text('Abono #$numero'),
-                          subtitle:
-                              Text(pagado ? 'Pagado' : 'Pendiente'),
+                          subtitle: Text(pagado ? 'Pagado' : 'Pendiente'),
                           trailing: Text(
                             '\$${_formatNum(monto)}',
                             style: const TextStyle(
@@ -141,12 +132,10 @@ class _VentaDetallePageState extends State<VentaDetallePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(12),
                         child: Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
                                   'Pagado',

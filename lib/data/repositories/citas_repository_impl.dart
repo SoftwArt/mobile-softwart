@@ -8,10 +8,8 @@ class CitasRepositoryImpl implements CitasRepository {
   final CitasDatasource _datasource;
   final AuthLocalDataSource _localDataSource;
 
-  CitasRepositoryImpl(
-    this._datasource,
-    [AuthLocalDataSource? localDataSource]
-  ) : _localDataSource = localDataSource ?? AuthLocalDataSource();
+  CitasRepositoryImpl(this._datasource, [AuthLocalDataSource? localDataSource])
+      : _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   Future<String> _getToken() async {
     final token = await _localDataSource.getToken();

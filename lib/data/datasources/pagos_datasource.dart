@@ -13,7 +13,8 @@ class PagosDatasource {
 
   Future<List<PagoModel>> getPagos() async {
     final token = await _localDataSource.getToken();
-    final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.payments}?limit=500');
+    final uri =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.payments}?limit=500');
     final res = await http.get(uri, headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -21,7 +22,9 @@ class PagosDatasource {
     if (res.statusCode != 200) throw Exception('Error al cargar pagos');
     final body = jsonDecode(res.body) as Map<String, dynamic>;
     final data = body['data'] as List<dynamic>;
-    return data.map((e) => PagoModel.fromJson(e as Map<String, dynamic>)).toList();
+    return data
+        .map((e) => PagoModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   // Usa el endpoint con guard (PATCH /payment-status/pago/:id/estado): el

@@ -8,10 +8,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
   final DashboardDatasource _datasource;
   final AuthLocalDataSource _localDataSource;
 
-  DashboardRepositoryImpl(
-    this._datasource,
-    [AuthLocalDataSource? localDataSource]
-  ) : _localDataSource = localDataSource ?? AuthLocalDataSource();
+  DashboardRepositoryImpl(this._datasource,
+      [AuthLocalDataSource? localDataSource])
+      : _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   @override
   Future<DashboardStats> getStats() async {

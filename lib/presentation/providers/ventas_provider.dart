@@ -44,7 +44,8 @@ class VentasProvider extends ChangeNotifier {
       _ventas = data;
       _error = null;
     } catch (e) {
-      if (primeraCarga) _error = e is AppException ? e.message : 'Error al cargar ventas';
+      if (primeraCarga)
+        _error = e is AppException ? e.message : 'Error al cargar ventas';
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -60,7 +61,8 @@ class VentasProvider extends ChangeNotifier {
     try {
       _estadoPagos = await _getEstadoPagosUsecase(idVenta);
     } catch (e) {
-      _estadoPagosError = e is AppException ? e.message : 'Error al cargar pagos';
+      _estadoPagosError =
+          e is AppException ? e.message : 'Error al cargar pagos';
     } finally {
       _isLoadingPagos = false;
       notifyListeners();

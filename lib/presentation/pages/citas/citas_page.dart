@@ -30,6 +30,7 @@ class _CitasPageState extends State<CitasPage> {
 
   static const _opcionesFiltro = [
     'Pendiente',
+    'Confirmada',
     'Completada',
     'No Asistió',
     'Cancelada',
@@ -52,7 +53,9 @@ class _CitasPageState extends State<CitasPage> {
   List<Cita> _filtrar(List<Cita> todas) {
     return todas.where((c) {
       final matchQuery = _query.isEmpty ||
-          (c.nombreCliente ?? '').toLowerCase().contains(_query.toLowerCase()) ||
+          (c.nombreCliente ?? '')
+              .toLowerCase()
+              .contains(_query.toLowerCase()) ||
           c.fecha.contains(_query);
       final matchEstado = _filtroEstado == null ||
           c.estadoCita.toLowerCase() == _filtroEstado!.toLowerCase();
@@ -198,8 +201,7 @@ class _CitasPageState extends State<CitasPage> {
                               index: index,
                               onTap: () => Navigator.of(context).push(
                                 AppPageRoute(
-                                  builder: (_) =>
-                                      CitaDetallePage(cita: cita),
+                                  builder: (_) => CitaDetallePage(cita: cita),
                                 ),
                               ),
                             );
@@ -220,37 +222,38 @@ class _CitaTile extends StatelessWidget {
   final int index;
   final VoidCallback onTap;
 
-  const _CitaTile({required this.cita, required this.index, required this.onTap});
+  const _CitaTile(
+      {required this.cita, required this.index, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return PressableScale(
       onTap: onTap,
       child: Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppColors.secondary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(10),
+        margin: const EdgeInsets.only(bottom: 8),
+        child: ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.secondary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(
+              Icons.event_outlined,
+              color: AppColors.secondary,
+              size: 20,
+            ),
           ),
-          child: const Icon(
-            Icons.event_outlined,
-            color: AppColors.secondary,
-            size: 20,
+          title: Text(
+            cita.nombreCliente ?? 'Cliente sin nombre',
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           ),
+          subtitle: Text(
+            '${formatFecha(cita.fecha)}  •  ${formatHora(cita.hora)}',
+            style: const TextStyle(fontSize: 12),
+          ),
+          trailing: EstadoBadge(texto: cita.estadoCita),
         ),
-        title: Text(
-          cita.nombreCliente ?? 'Cliente sin nombre',
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-        ),
-        subtitle: Text(
-          '${formatFecha(cita.fecha)}  •  ${formatHora(cita.hora)}',
-          style: const TextStyle(fontSize: 12),
-        ),
-        trailing: EstadoBadge(texto: cita.estadoCita),
-      ),
       ),
     )
         .animate(delay: (30 * index).ms)

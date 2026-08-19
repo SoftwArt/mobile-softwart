@@ -8,10 +8,9 @@ class ClientesRepositoryImpl implements ClientesRepository {
   final ClientesDatasource _datasource;
   final AuthLocalDataSource _localDataSource;
 
-  ClientesRepositoryImpl(
-    this._datasource,
-    [AuthLocalDataSource? localDataSource]
-  ) : _localDataSource = localDataSource ?? AuthLocalDataSource();
+  ClientesRepositoryImpl(this._datasource,
+      [AuthLocalDataSource? localDataSource])
+      : _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   Future<String> _getToken() async {
     final token = await _localDataSource.getToken();

@@ -8,10 +8,8 @@ class VentasRepositoryImpl implements VentasRepository {
   final VentasDatasource _datasource;
   final AuthLocalDataSource _localDataSource;
 
-  VentasRepositoryImpl(
-    this._datasource,
-    [AuthLocalDataSource? localDataSource]
-  ) : _localDataSource = localDataSource ?? AuthLocalDataSource();
+  VentasRepositoryImpl(this._datasource, [AuthLocalDataSource? localDataSource])
+      : _localDataSource = localDataSource ?? AuthLocalDataSource();
 
   Future<String> _getToken() async {
     final token = await _localDataSource.getToken();

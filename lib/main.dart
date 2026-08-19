@@ -126,7 +126,7 @@ class SoftwArtApp extends StatelessWidget {
         home: const _Splash(),
         routes: {
           '/login': (_) => const LoginPage(),
-          '/home':  (_) => const MainShell(),
+          '/home': (_) => const MainShell(),
         },
       ),
     );
@@ -143,8 +143,10 @@ class _Splash extends StatefulWidget {
 
 class _SplashState extends State<_Splash> {
   // Mismos tiempos que el frontend web (useBackendWakeup):
-  static const _showMessageAfter = Duration(milliseconds: 800); // muestra el mensaje si tarda
-  static const _requestTimeout   = Duration(seconds: 5);        // timeout por intento + espera entre reintentos
+  static const _showMessageAfter =
+      Duration(milliseconds: 800); // muestra el mensaje si tarda
+  static const _requestTimeout =
+      Duration(seconds: 5); // timeout por intento + espera entre reintentos
 
   bool _showMessage = false;
   Timer? _messageTimer;
@@ -162,7 +164,7 @@ class _SplashState extends State<_Splash> {
   }
 
   Future<void> _boot() async {
-    await _wakeBackend();        // despierta el backend (cold start) antes de navegar
+    await _wakeBackend(); // despierta el backend (cold start) antes de navegar
     _messageTimer?.cancel();
     if (!mounted) return;
     await _checkAuth();
@@ -194,9 +196,9 @@ class _SplashState extends State<_Splash> {
           final usuario = _decodeUsuarioFromToken(token);
           if (!mounted) return;
           context.read<AuthProvider>().setAuthenticated(
-            usuario: usuario,
-            token: token,
-          );
+                usuario: usuario,
+                token: token,
+              );
           Navigator.of(context).pushReplacementNamed('/home');
           return;
         } catch (_) {
